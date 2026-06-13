@@ -73,8 +73,10 @@ dynamic-pricing/
 ├── kafka/
 │   └── docker-compose.yml       # Kafka + Zookeeper, deployed on Azure VM
 │
-├── spark/
-│   └── streaming_consumer.py    # Reference copy of Databricks streaming logic
+├── databricks/
+│   └── notebooks/
+│       ├── 01_train_model.py     # Trains RandomForestRegressor, logs to MLflow
+│       └── 02_streaming_inference.py  # Spark Structured Streaming + ML inference + Snowflake sink
 │
 ├── pricing_project/              # dbt project
 │   ├── models/
@@ -102,6 +104,7 @@ dynamic-pricing/
 │   ├── dbt_run.png
 │   └── airflow_dag.png
 │
+├── LICENSE
 └── README.md
 ```
 
