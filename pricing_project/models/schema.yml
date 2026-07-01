@@ -1,0 +1,103 @@
+version: 2
+
+sources:
+  - name: raw
+    database: PRICING_DB
+    schema: RAW
+    tables:
+      - name: pricing_stream
+        description: "Raw pricing events ingested from Kafka via Spark Structured Streaming"
+        columns:
+          - name: event_time
+            description: "Timestamp of the pricing event"
+            tests:
+              - not_null
+              - unique
+          - name: city
+            description: "City where the pricing event occurred"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['London', 'Manchester']
+          - name: demand
+            description: "Demand units at time of event"
+            tests:
+              - not_null
+          - name: supply
+            description: "Supply units at time of event"
+            tests:
+              - not_null
+          - name: predicted_price
+            description: "ML model predicted price"
+            tests:
+              - not_null
+
+models:
+  - name: stg_pricing
+    description: "Staged and cleaned pricing events from raw Kafka stream"
+    columns:
+      - name: event_time
+        tests:
+          - not_null
+          - unique
+      - name: city
+        tests:
+          - not_null
+      - name: demand_units
+        tests:
+          - not_null
+      - name: supply_units
+        tests:
+          - not_null
+      - name: predicted_price
+        tests:
+          - not_null
+      - name: demand_supply_ratio
+        description: "Ratio of demand to supply"
+        tests:
+          - not_null
+      - name: event_hour
+        description: "Hour extracted from event_time"
+        tests:
+          - not_null
+      - name: event_day_of_week
+        description: "Day of week extracted from event_time"
+        tests:
+          - not_null
+
+  - name: mart_pricing
+    description: "Final analytics-ready pricing mart with demand classification"
+    columns:
+      - name: event_time
+        tests:
+          - not_null
+          - unique
+      - name: city
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['London', 'Manchester']
+      - name: demand_units
+        tests:
+          - not_null
+      - name: supply_units
+        tests:
+          - not_null
+      - name: predicted_price
+        tests:
+          - not_null
+      - name: demand_supply_ratio
+        tests:
+          - not_null
+      - name: event_hour
+        tests:
+          - not_null
+      - name: event_day_of_week
+        tests:
+          - not_null
+      - name: demand_flag
+        description: "Demand classification based on demand/supply ratio"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['high_demand', 'low_demand', 'normal']
