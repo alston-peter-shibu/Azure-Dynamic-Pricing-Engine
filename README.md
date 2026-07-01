@@ -126,7 +126,7 @@ Predictions and raw event data are inserted into `RAW.PRICING_STREAM` in Snowfla
 - **fact_pricing**: incremental model — classifies each event into `high_demand` / `normal` / `low_demand` based on the demand/supply ratio, processing only new rows on each run
 
 ### 5. Orchestration
-Apache Airflow (Dockerized, SequentialExecutor) runs a DAG every 5 minutes that executes `dbt run` followed by `dbt test` against the dbt project.
+Apache Airflow (Dockerized, SequentialExecutor) runs a DAG every 5 minutes that executes `dbt run` followed by `dbt test` against the dbt project. Data quality tests are defined in models/schema.yml covering not_null, unique, and accepted_values constraints across source, staging, and mart layers, executed automatically by Airflow on every DAG run.
 
 ---
 
